@@ -1,0 +1,19 @@
+{
+  "name": "ems-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vivek-barot-albiorix/ems-node.git"
+  },
+  "author": "Vivek Barot",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vivek-barot-albiorix/ems-node/issues"
+  },
+  "homepage": "https://github.com/vivek-barot-albiorix/ems-node#readme"
+}
