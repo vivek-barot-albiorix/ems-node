@@ -5,7 +5,6 @@ const { resStatusCode } = require("../../helper/constant"); //common data
 const logger = require("../../helper/logger");
 
 exports.getUserList = async (req, res) => {
-  console.log("in getuserlist");
   try {
     const data = await mongoUtils.getData(
       model.userModel,
@@ -14,7 +13,6 @@ exports.getUserList = async (req, res) => {
         email: 1,
       }
     );
-    console.log(data);
 
     const response = {
       success: true,
@@ -22,12 +20,61 @@ exports.getUserList = async (req, res) => {
     };
     return res.status(resStatusCode.success).json(response);
   } catch (err) {
-    console.log(err);
     logger.error(err.message);
     const response = {
       success: false,
       message: "ERROR",
       error: err.message,
+    };
+    return res.status(resStatusCode.error.internalServerError).json(response);
+  }
+};
+
+exports.addUser = async (req, res) => {
+  const email = req.body.personalDetails.email.toLowerCase().trim();
+  const data = {
+    email: email,
+  };
+  try {
+    // check email Exist or not
+    const emailExist = await mongoUtils.checkExist(
+      model.userPersonalDetailModel,
+      {
+        email: email,
+      }
+    );
+    if (emailExist) {
+      const response = {
+        success: false,
+        message: "ADD_USER_FAIL",
+        error: "ERR_EMAIL_EXIST",
+      };
+      return res.json(response);
+    } else {
+      // insert data
+      const userPersonalDetailResult = await mongoUtils.insert(
+        model.userPersonalDetailModel,
+        req.body.personalDetails
+      );
+      const userBankDetailResult = await mongoUtils.insert(
+        model.userBankDetailModel,
+        req.body.bankDetails
+      );
+      const response = {
+        success: true,
+        message: "USER_ADDED",
+        body: {
+          userPersonalDetailResult,
+          userBankDetailResult,
+        },
+      };
+      return res.status(resStatusCode.created).json(response);
+    }
+  } catch (err) {
+    const response = {
+      success: false,
+      err: err.message,
+      message: "ADD_USER_FAIL",
     };
     return res.status(resStatusCode.error.internalServerError).json(response);
   }

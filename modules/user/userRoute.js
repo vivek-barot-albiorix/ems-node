@@ -5,8 +5,6 @@ const router = express.Router();
 
 const userController = require("./userController");
 
-console.log("in userRoute");
-
 //to validate request
 router.use((req, res, next) => {
   if (req.method !== "OPTIONS") {
@@ -21,12 +19,13 @@ router.use((req, res, next) => {
 router.use([
   (req, res, next) => {
     // Add Urls to by pass auth protection
-    req.byPassRoute = ["/getUserList"];
+    req.byPassRoute = ["/getUserList", "/addUser"];
     next();
   },
 ]);
 
 //routes for user controller
 router.get("/getUserList", userController.getUserList);
+router.post("/addUser", userController.addUser);
 
 module.exports = router;

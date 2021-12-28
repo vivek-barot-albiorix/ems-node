@@ -1,8 +1,10 @@
 // imports
-const userModel = require("../modules/user/userModel");
+const userPersonalDetailModel = require("../modules/user/userPersonalDetailModel");
+const userBankDetailModel = require("../modules/user/userBankDetailModel");
 
 const Models = {
-    userModel: userModel
+  userPersonalDetailModel: userPersonalDetailModel,
+  userBankDetailModel: userBankDetailModel,
 };
 
 module.exports = Models;

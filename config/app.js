@@ -48,7 +48,6 @@ app.use("/api/v1", router);
 
 // when no routes match
 app.all("/*", (req, res) => {
-  console.log(req.url);
   return res.status(resStatusCode.error.notFound).json({
     message: "URL_NOT_FOUND",
   });
