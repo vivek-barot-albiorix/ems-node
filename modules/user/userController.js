@@ -6,17 +6,27 @@ const logger = require("../../helper/logger");
 
 exports.getUserList = async (req, res) => {
   try {
-    const data = await mongoUtils.getData(
-      model.userModel,
-      {},
+    const result = await model.userPersonalDetailModel.aggregate([
       {
-        email: 1,
-      }
-    );
-
+        $lookup: {
+          from: "user_bank_details",
+          localField: "_id",
+          foreignField: "userId",
+          as: "BankDetails",
+        },
+      },
+      {
+        $lookup: {
+          from: "user_professional_details",
+          localField: "_id",
+          foreignField: "userId",
+          as: "UserProfessionalDetails",
+        },
+      },
+    ]);
     const response = {
       success: true,
-      body: data.length ? data : "NO_DATA_FOUND",
+      body: result.length ? result : "NO_DATA_FOUND",
     };
     return res.status(resStatusCode.success).json(response);
   } catch (err) {
@@ -32,9 +42,6 @@ exports.getUserList = async (req, res) => {
 
 exports.addUser = async (req, res) => {
   const email = req.body.personalDetails.email.toLowerCase().trim();
-  const data = {
-    email: email,
-  };
   try {
     // check email Exist or not
     const emailExist = await mongoUtils.checkExist(
@@ -58,7 +65,17 @@ exports.addUser = async (req, res) => {
       );
       const userBankDetailResult = await mongoUtils.insert(
         model.userBankDetailModel,
-        req.body.bankDetails
+        {
+          userId: userPersonalDetailResult._id,
+          ...req.body.bankDetails,
+        }
+      );
+      const userProfessionalDetailResult = await mongoUtils.insert(
+        model.userProfessionalDetailModel,
+        {
+          userId: userPersonalDetailResult._id,
+          ...req.body.professionalDetails,
+        }
       );
       const response = {
         success: true,
@@ -66,6 +83,7 @@ exports.addUser = async (req, res) => {
         body: {
           userPersonalDetailResult,
           userBankDetailResult,
+          userProfessionalDetailResult,
         },
       };
       return res.status(resStatusCode.created).json(response);

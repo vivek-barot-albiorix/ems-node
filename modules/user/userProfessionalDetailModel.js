@@ -7,30 +7,30 @@ const userSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "user_personal_details",
   },
-  bankName: {
+  designation: {
     type: String,
     required: true,
   },
-  accountType: {
+  department: {
     type: String,
     required: true,
   },
-  accountNumber: {
-    type: Number,
-    required: true,
-  },
-  IFSCCode: {
+  expYears: {
     type: String,
     required: true,
   },
-  aadharNumber: {
-    type: Number,
+  expMonths: {
+    type: String,
     required: true,
   },
-  panNumber: {
+  currentLocation: {
+    type: String,
+    required: true,
+  },
+  skills: {
     type: String,
     required: true,
   },
 });
 
-module.exports = mongoose.model("user_bank_details", userSchema);
+module.exports = mongoose.model("user_professional_details", userSchema);
